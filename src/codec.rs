@@ -11,16 +11,16 @@ impl Codec<'_> {
   pub fn new<'a>(input: &'a [u8]) -> Codec<'a> {
     Codec { buffer: BitSlice::from_slice(input), index: 0 }
   }
-  pub fn look_bits(&self, n: usize) -> u64 {
+  pub fn look_bits(&self, n: usize) -> u32 {
     assert!(n <= 64);
     if n == 0 { return 0 }
     if self.index + n > self.buffer.len() {
-      self.buffer[self.index..].load_be::<u64>() << (self.index + n - self.buffer.len())
+      self.buffer[self.index..].load_be::<u32>() << (self.index + n - self.buffer.len())
     } else {
       self.buffer[self.index..self.index+n].load_be()
     }
   }
-  pub fn read_bits(&mut self, n: usize) -> Result<u64, Error> {
+  pub fn read_bits(&mut self, n: usize) -> Result<u32, Error> {
     assert!(n <= 64);
     if self.index + n > self.buffer.len() {
       bail!("read out of index {} < {}", self.index+n, self.buffer.len());
